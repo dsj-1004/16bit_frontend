@@ -480,10 +480,15 @@ function OnboardingPage() {
                   {...registerBasic('birthDate')}
                   className={clsx(
                     'h-[45px] w-full rounded-[12px] border-[1.5px] px-3 text-[15px] outline-none placeholder:text-[#9D9D9D]',
+                    '[&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-date-and-time-value]:text-left',
+                    '[&::-webkit-clear-button]:hidden [&::-webkit-inner-spin-button]:appearance-none',
                     errorsBasic.birthDate
                       ? 'border-[#FF715B]'
                       : 'border-[#DDD] focus:border-[#FF715B]'
                   )}
+                  style={{
+                    WebkitAppearance: 'none',
+                  }}
                 />
                 <Calendar className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-[#9D9D9D]" />
               </div>
