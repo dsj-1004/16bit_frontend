@@ -948,24 +948,15 @@ function OnboardingPage() {
   const renderComplete = () => (
     <div className="animate-in fade-in zoom-in flex h-full flex-col items-center justify-center overflow-hidden duration-300">
       <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto pb-[calc(56px+16px+20px)]">
-        {/* Custom Check Icon matching Figma */}
+        {/* Logo Icon */}
         <div className="relative mb-6">
-          <svg
+          <img
+            src="/assets/kok-logo.svg"
+            alt="Logo"
             width="88"
             height="88"
-            viewBox="0 0 88 88"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="44" cy="44" r="44" fill="#FF715B" />
-            <path
-              d="M28 44L39.5 55.5L61.5 33.5"
-              stroke="white"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+            className="mx-auto"
+          />
         </div>
 
         <h1 className="mb-2 text-center text-[24px] leading-[1.3] font-bold whitespace-pre-wrap text-[#292929]">
