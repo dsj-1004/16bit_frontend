@@ -3,7 +3,17 @@
     "allow": [
       "WebFetch(domain:www.figma.com)",
       "mcp__figma__get_screenshot",
-      "mcp__figma__get_design_context"
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_metadata",
+      "WebFetch(domain:tilnote.io)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_close",
+      "mcp__playwright__browser_run_code",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_install",
+      "mcp__playwright__browser_tabs"
     ]
   }
 }

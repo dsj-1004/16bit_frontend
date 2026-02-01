@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState, useEffect } from 'react'
+import { ChevronLeft, X, Eye, EyeOff, Check } from 'lucide-react'
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -42,6 +43,8 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [passwordValue, setPasswordValue] = useState('')
   const [emailTouched, setEmailTouched] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [pendingUserData, setPendingUserData] = useState<FormData | null>(null)
 
   const {
     register,
@@ -61,26 +64,51 @@ function LoginPage() {
     setPasswordValue(password || '')
   }, [password])
 
-  const onSubmit = (data: FormData) => {
-    // Check if user exists in localStorage
-    const existingUser = localStorage.getItem('user')
+  // Removed auto-redirect useEffect to allow access to login page
 
-    if (existingUser) {
-      const user = JSON.parse(existingUser)
-      // Simple validation: check if email and password match
-      if (user.email === data.email && user.password === data.password) {
-        // Login successful - go to main page
-        localStorage.setItem('isAuthenticated', 'true')
-        navigate({ to: '/' })
-      } else {
-        alert('이메일 또는 비밀번호가 일치하지 않습니다.')
+  const onSubmit = (data: FormData) => {
+    // Check if user exists in 'DB' (localStorage registeredUser)
+    const storedAccountStr = localStorage.getItem('registeredUser')
+
+    if (storedAccountStr) {
+      try {
+        const storedAccount = JSON.parse(storedAccountStr)
+        if (
+          storedAccount.email === data.email &&
+          storedAccount.password === data.password
+        ) {
+          // Login Success
+          localStorage.setItem('user', JSON.stringify(storedAccount))
+          navigate({ to: '/search-map' })
+          return
+        }
+      } catch {
+        // Ignore parse errors
       }
-    } else {
-      // New user - save to localStorage and go to onboarding
-      localStorage.setItem('user', JSON.stringify(data))
-      localStorage.setItem('isAuthenticated', 'true')
+    }
+
+    // If not found or mismatch, treat as new user flow
+    setPendingUserData(data)
+    setIsModalOpen(true)
+  }
+
+  const handleNewUserConfirm = (goToOnboarding: boolean) => {
+    if (pendingUserData && goToOnboarding) {
+      const userData = {
+        name: '김콕콕', // Mock name matching the design
+        ...pendingUserData,
+      }
+
+      // Save to 'DB' (Persistent Account)
+      localStorage.setItem('registeredUser', JSON.stringify(userData))
+
+      // Save to 'Session' (Current Login)
+      localStorage.setItem('user', JSON.stringify(userData))
+
       navigate({ to: '/onboarding' })
     }
+    // If No (goToOnboarding is false), simply close the modal to stay on the page
+    setIsModalOpen(false)
   }
 
   const clearEmail = () => {
@@ -98,16 +126,15 @@ function LoginPage() {
   }
 
   return (
-    <div className="relative mx-auto flex h-screen w-full max-w-[375px] flex-col bg-white px-5 pt-7">
+    <div className="relative mx-auto flex h-screen w-full max-w-[375px] flex-col overflow-hidden bg-white px-5 pt-7">
       {/* Back Button */}
       <button
         onClick={() => navigate({ to: '/' })}
-        className="flex h-5 w-5 items-center justify-center"
+        className="-ml-2 flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-100 active:bg-gray-200"
       >
-        <img
-          src="/assets/back-arrow.svg"
-          alt="뒤로가기"
-          className="h-[19px] w-[11px]"
+        <ChevronLeft
+          className="h-6 w-6 text-[var(--text-primary)]"
+          strokeWidth={2}
         />
       </button>
 
@@ -115,25 +142,25 @@ function LoginPage() {
       <form
         id="login-form"
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-[52px] flex flex-col"
+        className="mt-[40px] flex flex-col"
       >
         {/* Title */}
-        <h1 className="mb-12 text-[22px] leading-[26px] font-semibold tracking-[-0.44px] text-[--text-primary]">
+        <h1 className="mb-12 text-[22px] leading-[26px] font-semibold tracking-[-0.44px] text-[var(--text-primary)]">
           사용자 정보를 입력해주세요
         </h1>
 
         {/* Information Section */}
         <div className="flex flex-col gap-8">
-          {/* Email Field */}
+          {/* Email Field - Labeled as '이름' per design */}
           <div className="flex flex-col gap-[9px]">
             <div className="flex items-center gap-[1px]">
               <label
                 htmlFor="email"
-                className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[--text-secondary] opacity-80"
+                className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--text-secondary)] opacity-80"
               >
                 이름
               </label>
-              <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[--brand-primary]">
+              <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--brand-primary)]">
                 *
               </span>
             </div>
@@ -145,25 +172,27 @@ function LoginPage() {
                 placeholder="IT@gmail.com"
                 {...register('email')}
                 onBlur={() => setEmailTouched(true)}
-                className="h-[49px] w-full rounded-[10px] border border-[#e5e5e5] bg-white px-4 text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[--text-tertiary] placeholder:text-[--text-placeholder] focus:border-[--brand-primary] focus:outline-none"
+                className={`h-[49px] w-full rounded-[10px] border bg-white px-4 text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[var(--text-tertiary)] placeholder:text-[var(--text-placeholder)] focus:outline-none ${
+                  emailTouched && errors.email
+                    ? 'border-[var(--brand-error)] focus:border-[var(--brand-error)]'
+                    : 'border-[#e5e5e5] focus:border-[var(--brand-primary)]'
+                }`}
               />
               {email && (
                 <button
                   type="button"
                   onClick={clearEmail}
-                  className="absolute top-1/2 right-4 -translate-y-1/2"
+                  className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  <img
-                    src="/assets/clear-icon.svg"
-                    alt="지우기"
-                    className="h-[15px] w-[15px]"
-                  />
+                  <div className="rounded-full bg-[#C5C5C5] p-[2px]">
+                    <X className="h-3 w-3 text-white" strokeWidth={3} />
+                  </div>
                 </button>
               )}
             </div>
 
             {emailTouched && errors.email && (
-              <p className="text-[12px] leading-[12px] font-medium tracking-[-0.06px] text-[--brand-error] opacity-80">
+              <p className="text-[12px] leading-[12px] font-medium tracking-[-0.06px] text-[var(--brand-error)] opacity-80">
                 * {errors.email.message}
               </p>
             )}
@@ -174,11 +203,11 @@ function LoginPage() {
             <div className="flex items-center gap-[1px]">
               <label
                 htmlFor="password"
-                className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[--text-secondary] opacity-80"
+                className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--text-secondary)] opacity-80"
               >
                 비밀번호
               </label>
-              <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[--brand-primary]">
+              <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--brand-primary)]">
                 *
               </span>
             </div>
@@ -189,31 +218,29 @@ function LoginPage() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="비밀번호"
                 {...register('password')}
-                className="h-[49px] w-full rounded-[10px] border border-[#e5e5e5] bg-white px-4 pr-[68px] text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[--text-tertiary] placeholder:text-[--text-placeholder] focus:border-[--brand-primary] focus:outline-none"
+                className={`h-[49px] w-full rounded-[10px] border bg-white px-4 pr-[68px] text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[var(--text-tertiary)] placeholder:text-[var(--text-placeholder)] focus:outline-none ${'border-[#e5e5e5] focus:border-[var(--brand-primary)]'}`}
               />
               <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="flex h-[23px] w-[24px] items-center justify-center"
+                  className="flex items-center justify-center text-[var(--text-placeholder)] hover:text-[var(--text-tertiary)]"
                 >
-                  <img
-                    src={
-                      showPassword
-                        ? '/assets/eye-show.svg'
-                        : '/assets/eye-hide.svg'
-                    }
-                    alt={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
-                    className="h-full w-full"
-                  />
+                  {showPassword ? (
+                    <Eye className="h-6 w-6" strokeWidth={1.5} />
+                  ) : (
+                    <EyeOff className="h-6 w-6" strokeWidth={1.5} />
+                  )}
                 </button>
                 {password && (
-                  <button type="button" onClick={clearPassword}>
-                    <img
-                      src="/assets/clear-icon.svg"
-                      alt="지우기"
-                      className="h-[15px] w-[15px]"
-                    />
+                  <button
+                    type="button"
+                    onClick={clearPassword}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <div className="rounded-full bg-[#C5C5C5] p-[2px]">
+                      <X className="h-3 w-3 text-white" strokeWidth={3} />
+                    </div>
                   </button>
                 )}
               </div>
@@ -231,23 +258,18 @@ function LoginPage() {
                     <span
                       className={`text-[12px] leading-[12px] font-medium tracking-[-0.06px] opacity-80 ${
                         status === 'success'
-                          ? 'text-[--brand-success]'
+                          ? 'text-[var(--brand-success)]'
                           : status === 'error'
-                            ? 'text-[--brand-error]'
-                            : 'text-[--text-secondary]'
+                            ? 'text-[var(--brand-error)]'
+                            : 'text-[var(--text-secondary)]'
                       }`}
                     >
                       {requirement.label}
                     </span>
                     {status !== 'inactive' && (
-                      <img
-                        src={
-                          status === 'success'
-                            ? '/assets/check-success.svg'
-                            : '/assets/check-error.svg'
-                        }
-                        alt={status === 'success' ? '충족' : '미충족'}
-                        className="h-[6px] w-[8px]"
+                      <Check
+                        className={`h-3 w-3 ${status === 'success' ? 'text-[var(--brand-success)]' : 'text-[var(--brand-error)]'}`}
+                        strokeWidth={4}
                       />
                     )}
                   </div>
@@ -265,13 +287,40 @@ function LoginPage() {
         disabled={!isValid}
         className={`absolute right-5 bottom-[41px] left-5 h-[56px] rounded-[10px] text-[17px] font-medium transition-all ${
           isValid
-            ? 'bg-[--brand-primary] text-white hover:bg-[--brand-primary]/90 active:scale-[0.98]'
-            : 'cursor-not-allowed bg-[#e5e5e5] text-[--text-disabled]'
+            ? 'bg-[var(--brand-primary)] text-white hover:opacity-90 active:scale-[0.98]'
+            : 'cursor-not-allowed bg-[#e5e5e5] text-[var(--text-disabled)]'
         }`}
         onClick={handleSubmit(onSubmit)}
       >
         시작하기
       </button>
+
+      {/* New Member Modal */}
+      {isModalOpen && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="animate-fade-in flex w-[293px] flex-col overflow-hidden rounded-[14px] bg-white text-center shadow-lg">
+            <div className="px-5 pt-[24px] pb-[16px]">
+              <p className="text-[16px] leading-[25.6px] font-normal tracking-[-0.32px] whitespace-pre-wrap text-[#454545]">
+                신규 회원이시네요!{'\n'}회원 정보를 입력해주세요
+              </p>
+            </div>
+            <div className="flex gap-[9px] px-[20px] pb-[20px]">
+              <button
+                onClick={() => handleNewUserConfirm(false)}
+                className="h-[43px] flex-1 rounded-[10px] bg-[#3A3A49] text-[14px] font-semibold text-white transition-colors hover:bg-[#2a2a39] active:bg-[#1a1a29]"
+              >
+                아니오
+              </button>
+              <button
+                onClick={() => handleNewUserConfirm(true)}
+                className="h-[43px] flex-1 rounded-[10px] bg-[var(--brand-primary)] text-[14px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+              >
+                네
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
