@@ -1,0 +1,2 @@
+pnpm lint-staged --allow-empty
+pnpm type-check
