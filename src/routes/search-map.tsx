@@ -45,7 +45,7 @@ function SearchMapPage() {
   const maxLength = 300
 
   return (
-    <div className="relative mx-auto h-screen w-full max-w-[375px] overflow-hidden bg-white">
+    <div className="relative mx-auto h-screen w-full max-w-[375px] overflow-hidden bg-white font-sans">
       {/* Status Bar */}
       <div className="absolute top-0 left-0 z-20 flex h-11 w-full items-center justify-between bg-[#fcfcfc] px-5 pt-4 pb-3">
         <div className="flex items-center justify-center gap-1">
