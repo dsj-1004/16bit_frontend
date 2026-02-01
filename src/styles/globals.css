@@ -61,6 +61,18 @@
   --ring: oklch(0.1 0 0);
   --radius: 0.5rem;
 
+  /* Brand colors */
+  --brand-primary: #ff715b;
+  --brand-success: #008e00;
+  --brand-error: #ff0000;
+  
+  /* Text colors */
+  --text-primary: #292929;
+  --text-secondary: #222222;
+  --text-tertiary: #343434;
+  --text-placeholder: #c5c5c5;
+  --text-disabled: #a7a7a7;
+
   /* Sidebar - Grayscale */
   --sidebar: oklch(0.98 0 0);
   --sidebar-foreground: oklch(0.1 0 0);

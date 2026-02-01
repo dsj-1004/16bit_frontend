@@ -24,7 +24,7 @@ function CoverPage() {
 
       {/* Start Button */}
       <Link
-        to="/search-map"
+        to="/login"
         className="w-full rounded-[10px] bg-white px-8 py-4 text-center text-[17px] font-semibold text-[#ff715b] transition-all hover:bg-white/90 active:scale-95"
       >
         시작하기
