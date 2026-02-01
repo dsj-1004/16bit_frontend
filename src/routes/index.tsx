@@ -11,7 +11,7 @@ function CoverPage() {
       <div className="flex flex-col items-center gap-6">
         {/* KOK Logo */}
         <img
-          src="/assets/kok-logo.svg"
+          src="/assets/kok-logo.png"
           alt="KOK Logo"
           className="h-[83px] w-[165px]"
         />
