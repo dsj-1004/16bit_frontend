@@ -681,9 +681,7 @@ function SearchMapPage() {
 
             {/* Hospital List - Scrollable */}
             <div className="flex-1 overflow-y-auto bg-white px-5 py-0">
-              <div className="space-y-3 pt-2 pb-24">
-                {' '}
-                {/* Padding for fixed button */}
+              <div className="space-y-3 pt-2 pb-[calc(53px+32px+20px)]">
                 {(hasCompletedCall
                   ? [...mockHospitals, ...unavailableHospitals]
                   : mockHospitals
@@ -787,8 +785,8 @@ function SearchMapPage() {
               </div>
             </div>
 
-            {/* Action Buttons - Fixed at bottom of sheet */}
-            <div className="absolute bottom-0 left-0 w-full border-t border-gray-100 bg-white px-5 py-4">
+            {/* Fixed Action Button */}
+            <div className="fixed right-0 bottom-0 left-0 mx-auto w-full max-w-[375px] border-t border-gray-100 bg-white px-5 py-4">
               <button
                 onClick={handleConfirmConnection}
                 className="flex h-[53px] w-full items-center justify-center rounded-[10px] bg-[#FF715B] text-white transition-colors"

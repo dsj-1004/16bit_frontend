@@ -95,7 +95,6 @@ function LoginPage() {
   const handleNewUserConfirm = (goToOnboarding: boolean) => {
     if (pendingUserData && goToOnboarding) {
       const userData = {
-        name: '김콕콕', // Mock name matching the design
         ...pendingUserData,
       }
 
@@ -126,117 +125,65 @@ function LoginPage() {
   }
 
   return (
-    <div className="relative mx-auto flex h-screen w-full max-w-[375px] flex-col overflow-hidden bg-white px-5 pt-7">
-      {/* Back Button */}
-      <button
-        onClick={() => navigate({ to: '/' })}
-        className="-ml-2 flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-100 active:bg-gray-200"
-      >
-        <ChevronLeft
-          className="h-6 w-6 text-[var(--text-primary)]"
-          strokeWidth={2}
-        />
-      </button>
+    <div className="relative mx-auto flex h-screen w-full max-w-[375px] flex-col overflow-hidden bg-white">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-5 pt-7 pb-[calc(56px+41px+20px)]">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate({ to: '/' })}
+          className="-ml-2 flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-100 active:bg-gray-200"
+        >
+          <ChevronLeft
+            className="h-6 w-6 text-[var(--text-primary)]"
+            strokeWidth={2}
+          />
+        </button>
 
-      {/* Form */}
-      <form
-        id="login-form"
-        onSubmit={handleSubmit(onSubmit)}
-        className="mt-[40px] flex flex-col"
-      >
-        {/* Title */}
-        <h1 className="mb-12 text-[22px] leading-[26px] font-semibold tracking-[-0.44px] text-[var(--text-primary)]">
-          사용자 정보를 입력해주세요
-        </h1>
+        {/* Form */}
+        <form
+          id="login-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-[40px] flex flex-col"
+        >
+          {/* Title */}
+          <h1 className="mb-12 text-[22px] leading-[26px] font-semibold tracking-[-0.44px] text-[var(--text-primary)]">
+            사용자 정보를 입력해주세요
+          </h1>
 
-        {/* Information Section */}
-        <div className="flex flex-col gap-8">
-          {/* Email Field - Labeled as '이름' per design */}
-          <div className="flex flex-col gap-[9px]">
-            <div className="flex items-center gap-[1px]">
-              <label
-                htmlFor="email"
-                className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--text-secondary)] opacity-80"
-              >
-                이름
-              </label>
-              <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--brand-primary)]">
-                *
-              </span>
-            </div>
-
-            <div className="relative">
-              <input
-                id="email"
-                type="text"
-                placeholder="IT@gmail.com"
-                {...register('email')}
-                onBlur={() => setEmailTouched(true)}
-                className={`h-[49px] w-full rounded-[10px] border bg-white px-4 text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[var(--text-tertiary)] placeholder:text-[var(--text-placeholder)] focus:outline-none ${
-                  emailTouched && errors.email
-                    ? 'border-[var(--brand-error)] focus:border-[var(--brand-error)]'
-                    : 'border-[#e5e5e5] focus:border-[var(--brand-primary)]'
-                }`}
-              />
-              {email && (
-                <button
-                  type="button"
-                  onClick={clearEmail}
-                  className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          {/* Information Section */}
+          <div className="flex flex-col gap-8">
+            {/* Email Field */}
+            <div className="flex flex-col gap-[9px]">
+              <div className="flex items-center gap-px">
+                <label
+                  htmlFor="email"
+                  className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--text-secondary)] opacity-80"
                 >
-                  <div className="rounded-full bg-[#C5C5C5] p-[2px]">
-                    <X className="h-3 w-3 text-white" strokeWidth={3} />
-                  </div>
-                </button>
-              )}
-            </div>
+                  이메일
+                </label>
+                <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--brand-primary)]">
+                  *
+                </span>
+              </div>
 
-            {emailTouched && errors.email && (
-              <p className="text-[12px] leading-[12px] font-medium tracking-[-0.06px] text-[var(--brand-error)] opacity-80">
-                * {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* Password Field */}
-          <div className="flex flex-col gap-[9px]">
-            <div className="flex items-center gap-[1px]">
-              <label
-                htmlFor="password"
-                className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--text-secondary)] opacity-80"
-              >
-                비밀번호
-              </label>
-              <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--brand-primary)]">
-                *
-              </span>
-            </div>
-
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="비밀번호"
-                {...register('password')}
-                className={`h-[49px] w-full rounded-[10px] border bg-white px-4 pr-[68px] text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[var(--text-tertiary)] placeholder:text-[var(--text-placeholder)] focus:outline-none ${'border-[#e5e5e5] focus:border-[var(--brand-primary)]'}`}
-              />
-              <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="flex items-center justify-center text-[var(--text-placeholder)] hover:text-[var(--text-tertiary)]"
-                >
-                  {showPassword ? (
-                    <Eye className="h-6 w-6" strokeWidth={1.5} />
-                  ) : (
-                    <EyeOff className="h-6 w-6" strokeWidth={1.5} />
-                  )}
-                </button>
-                {password && (
+              <div className="relative">
+                <input
+                  id="email"
+                  type="text"
+                  placeholder="IT@gmail.com"
+                  {...register('email')}
+                  onBlur={() => setEmailTouched(true)}
+                  className={`h-[49px] w-full rounded-[10px] border bg-white px-4 text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[var(--text-tertiary)] placeholder:text-[var(--text-placeholder)] focus:outline-none ${
+                    emailTouched && errors.email
+                      ? 'border-[var(--brand-error)] focus:border-[var(--brand-error)]'
+                      : 'border-[#e5e5e5] focus:border-[var(--brand-primary)]'
+                  }`}
+                />
+                {email && (
                   <button
                     type="button"
-                    onClick={clearPassword}
-                    className="text-gray-400 hover:text-gray-600"
+                    onClick={clearEmail}
+                    className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     <div className="rounded-full bg-[#C5C5C5] p-[2px]">
                       <X className="h-3 w-3 text-white" strokeWidth={3} />
@@ -244,56 +191,113 @@ function LoginPage() {
                   </button>
                 )}
               </div>
+
+              {emailTouched && errors.email && (
+                <p className="text-[12px] leading-[12px] font-medium tracking-[-0.06px] text-[var(--brand-error)] opacity-80">
+                  * {errors.email.message}
+                </p>
+              )}
             </div>
 
-            {/* Password Requirements */}
-            <div className="flex flex-wrap items-center gap-3">
-              {passwordRequirements.map((requirement) => {
-                const status = getRequirementStatus(requirement)
-                return (
-                  <div
-                    key={requirement.id}
-                    className="flex items-center gap-[2px]"
+            {/* Password Field */}
+            <div className="flex flex-col gap-[9px]">
+              <div className="flex items-center gap-px">
+                <label
+                  htmlFor="password"
+                  className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--text-secondary)] opacity-80"
+                >
+                  비밀번호
+                </label>
+                <span className="text-[14px] leading-[14px] font-semibold tracking-[-0.07px] text-[var(--brand-primary)]">
+                  *
+                </span>
+              </div>
+
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="비밀번호"
+                  {...register('password')}
+                  className={`h-[49px] w-full rounded-[10px] border bg-white px-4 pr-[68px] text-[16px] leading-[16px] font-normal tracking-[-0.08px] text-[var(--text-tertiary)] placeholder:text-[var(--text-placeholder)] focus:outline-none ${'border-[#e5e5e5] focus:border-[var(--brand-primary)]'}`}
+                />
+                <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="flex items-center justify-center text-[var(--text-placeholder)] hover:text-[var(--text-tertiary)]"
                   >
-                    <span
-                      className={`text-[12px] leading-[12px] font-medium tracking-[-0.06px] opacity-80 ${
-                        status === 'success'
-                          ? 'text-[var(--brand-success)]'
-                          : status === 'error'
-                            ? 'text-[var(--brand-error)]'
-                            : 'text-[var(--text-secondary)]'
-                      }`}
-                    >
-                      {requirement.label}
-                    </span>
-                    {status !== 'inactive' && (
-                      <Check
-                        className={`h-3 w-3 ${status === 'success' ? 'text-[var(--brand-success)]' : 'text-[var(--brand-error)]'}`}
-                        strokeWidth={4}
-                      />
+                    {showPassword ? (
+                      <Eye className="h-6 w-6" strokeWidth={1.5} />
+                    ) : (
+                      <EyeOff className="h-6 w-6" strokeWidth={1.5} />
                     )}
-                  </div>
-                )
-              })}
+                  </button>
+                  {password && (
+                    <button
+                      type="button"
+                      onClick={clearPassword}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <div className="rounded-full bg-[#C5C5C5] p-[2px]">
+                        <X className="h-3 w-3 text-white" strokeWidth={3} />
+                      </div>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Password Requirements */}
+              <div className="flex flex-wrap items-center gap-3">
+                {passwordRequirements.map((requirement) => {
+                  const status = getRequirementStatus(requirement)
+                  return (
+                    <div
+                      key={requirement.id}
+                      className="flex items-center gap-[2px]"
+                    >
+                      <span
+                        className={`text-[12px] leading-[12px] font-medium tracking-[-0.06px] opacity-80 ${
+                          status === 'success'
+                            ? 'text-[var(--brand-success)]'
+                            : status === 'error'
+                              ? 'text-[var(--brand-error)]'
+                              : 'text-[var(--text-secondary)]'
+                        }`}
+                      >
+                        {requirement.label}
+                      </span>
+                      {status !== 'inactive' && (
+                        <Check
+                          className={`h-3 w-3 ${status === 'success' ? 'text-[var(--brand-success)]' : 'text-[var(--brand-error)]'}`}
+                          strokeWidth={4}
+                        />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        form="login-form"
-        disabled={!isValid}
-        className={`absolute right-5 bottom-[41px] left-5 h-[56px] rounded-[10px] text-[17px] font-medium transition-all ${
-          isValid
-            ? 'bg-[var(--brand-primary)] text-white hover:opacity-90 active:scale-[0.98]'
-            : 'cursor-not-allowed bg-[#e5e5e5] text-[var(--text-disabled)]'
-        }`}
-        onClick={handleSubmit(onSubmit)}
-      >
-        시작하기
-      </button>
+      {/* Fixed Bottom Button Container */}
+      <div className="fixed right-0 bottom-0 left-0 mx-auto w-full max-w-[375px] bg-white px-5 pt-4 pb-[41px]">
+        <button
+          type="submit"
+          form="login-form"
+          disabled={!isValid}
+          className={`h-[56px] w-full rounded-[10px] text-[17px] font-medium transition-all ${
+            isValid
+              ? 'bg-[var(--brand-primary)] text-white hover:opacity-90 active:scale-[0.98]'
+              : 'cursor-not-allowed bg-[#e5e5e5] text-[var(--text-disabled)]'
+          }`}
+          onClick={handleSubmit(onSubmit)}
+        >
+          시작하기
+        </button>
+      </div>
 
       {/* New Member Modal */}
       {isModalOpen && (
