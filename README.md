@@ -1,4 +1,6 @@
-# React Project Starter (Demo Page)
+# 16bit_frontend
+
+헬스케어 X IT 해커톤
 
 React 19 기반의 **모바일 최적화 데모 페이지** 보일러플레이트입니다.
 
@@ -45,8 +47,8 @@ pnpm dev
 ```text
 src/
 ├── components/           # 컴포넌트
-│   ├── ui/               # ShadcnUI 기본 컴포넌트
-│   └── layout/           # 레이아웃 (Layout, Sidebar, Header)
+├── ui/               # ShadcnUI 기본 컴포넌트
+├── layout/           # 레이아웃 (Layout, Sidebar, Header)
 ├── config/               # 앱 설정
 ├── features/             # 기능별 모듈
 ├── hooks/                # 커스텀 훅
